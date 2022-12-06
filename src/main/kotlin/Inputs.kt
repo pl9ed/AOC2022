@@ -10,5 +10,4 @@ object Inputs {
             inputs.add(it)
         }
     }
-
 }
