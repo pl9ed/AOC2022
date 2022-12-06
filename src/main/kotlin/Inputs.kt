@@ -2,12 +2,15 @@ import java.io.File
 
 object Inputs {
 
-    val inputDir = File("src/main/resources/")
+    private val inputDir = File("src/main/resources/")
     val inputs = mutableListOf<File>()
+    val example = File("${inputDir}/example.txt")
 
     init {
         inputDir.listFiles()?.forEach {
-            inputs.add(it)
+            if (it.name.contains("input")) {
+                inputs.add(it)
+            }
         }
     }
 }
