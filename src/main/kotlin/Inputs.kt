@@ -7,9 +7,12 @@ object Inputs {
     val example = File("${inputDir}/example.txt")
 
     init {
-        inputDir.listFiles()?.forEach {
-            if (it.name.contains("input")) {
-                inputs.add(it)
+        inputDir.listFiles().apply {
+            sort()
+            forEach {
+                if (it.name.contains("input")) {
+                    inputs.add(it)
+                }
             }
         }
     }
