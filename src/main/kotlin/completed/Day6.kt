@@ -17,7 +17,7 @@ object Day6 {
 
     fun firstNonRepeatingSequence(string: String, length: Int) {
         for (i in length - 1 until string.length) {
-            val chars = string.subSequence(i - length + 1 .. i).toSet()
+            val chars = string.subSequence(i - length + 1..i).toSet()
             if (chars.size == length) {
                 println("${i + 1}, $chars")
                 break

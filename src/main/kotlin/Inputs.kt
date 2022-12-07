@@ -4,7 +4,7 @@ object Inputs {
 
     private val inputDir = File("src/main/resources/")
     val inputs = mutableListOf<File>()
-    val example = File("${inputDir}/example.txt")
+    val example = File("$inputDir/example.txt")
 
     init {
         inputDir.listFiles().apply {
