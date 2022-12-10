@@ -55,8 +55,7 @@ class Linear(input: File = Inputs.inputs[6]) {
         return directories.toList()
             .filter {
                 it.second >= neededSize
-            }
-            .sortedBy {
+            }.sortedBy {
                 it.second
             }[0].second
     }
