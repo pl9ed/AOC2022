@@ -8,6 +8,10 @@ fun main() {
         part1()
         part2()
     }
+    println("--------------------")
+    Day11(Inputs.getDay(11)).apply {
+        part1()
+    }
 }
 
 class Day11(val input: File) {
@@ -18,28 +22,20 @@ class Day11(val input: File) {
         input.readText().split("\n\n").forEach { str ->
             monkeys.add(str.toMonkey())
         }
-
-        monkeys.forEach {
-            it.items.joinToString()
-        }
     }
 
     private fun String.toMonkey(): Monkey {
-        lateinit var items: MutableList<Int>
-        lateinit var inspect: (Int) -> Int
-        var divisibleBy: Int = -1
-        var trueMonkey: Int = -1
-        var falseMonkey: Int = -1
-
         val lines = this.split("\n")
 
+        val items = mutableListOf<Int>()
         lines[1].split(":")[1].trim().split(", ").forEach { item ->
             items.add(item.toInt())
         }
-        inspect = getOperation(lines[2].split(":")[1])
-        divisibleBy = lines[3].filter { it.isDigit() }.toInt()
-        trueMonkey = lines[4].filter { it.isDigit() }.toInt()
-        falseMonkey = lines[5].filter { it.isDigit() }.toInt()
+        val inspect: (Int) -> Int = getOperation(lines[2].split(":")[1])
+        val divisibleBy: Int = lines[3].filter { it.isDigit() }.toInt()
+        val trueMonkey: Int = lines[4].filter { it.isDigit() }.toInt()
+        val falseMonkey: Int = lines[5].filter { it.isDigit() }.toInt()
+
         val test: (Int) -> Int = { worry ->
             if (worry % divisibleBy == 0) {
                 trueMonkey
@@ -54,7 +50,6 @@ class Day11(val input: File) {
     private fun getOperation(string: String): (Int) -> Int {
         val mutation = string.split("=")[1].trim().split(" ")
         // should be old {operation} {param}
-        val value = mutation[2].toInt()
         val operation: (Int, Int) -> Int = when (mutation[1]) {
             "+" -> Int::plus
             "-" -> Int::minus
@@ -64,15 +59,31 @@ class Day11(val input: File) {
         }
         return { worry ->
             try {
-                operation(worry, value)
+                val value = mutation[2].toInt()
+                operation(worry, value) / 3
             } catch (e: NumberFormatException) {
-                operation(worry, worry)
+                operation(worry, worry) / 3
             }
         }
     }
 
     fun part1() {
+        val inspectionCounts = Array(monkeys.size) { 0 }
 
+        for (i in 0 until 20) {
+            monkeys.forEachIndexed { n, monkey ->
+                while (monkey.items.isNotEmpty()) {
+                    val (target, item) = monkey.parseItem()
+                    inspectionCounts[n]++
+                    monkeys[target].items.add(item)
+                }
+            }
+        }
+
+        val monkeyBusiness = inspectionCounts.sortedDescending().take(2).reduce { n, m ->
+            n * m
+        }
+        println(monkeyBusiness)
     }
 
     fun part2() {
@@ -80,8 +91,16 @@ class Day11(val input: File) {
     }
 }
 
-data class Monkey(
+class Monkey(
     val inspect: (Int) -> Int,
     val test: (Int) -> Int,
     val items: MutableList<Int> = mutableListOf(),
-)
+) {
+    fun parseItem(): Array<Int> {
+        val item = items.removeFirst()
+        val worry = inspect(item)
+        val target = test(worry)
+
+        return arrayOf(target, worry)
+    }
+}
