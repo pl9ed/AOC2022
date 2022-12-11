@@ -1,5 +1,4 @@
 import java.io.File
-import java.util.*
 
 fun main() {
     Day8(Inputs.example).apply {

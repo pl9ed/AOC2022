@@ -16,4 +16,8 @@ object Inputs {
             }
         }
     }
+
+    fun getDay(n: Int): File {
+        return File("src/main/resources/input$n.txt")
+    }
 }
