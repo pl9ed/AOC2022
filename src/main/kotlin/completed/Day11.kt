@@ -48,11 +48,26 @@ class Day11(val input: File) {
     }
 
     fun part2() {
-        monkeys.clear()
+        resetState()
 
-        input.readText().split("\n\n").forEach { str ->
-            monkeys.add(Monkey(str))
+        val inspectionCounts = Array(monkeys.size) { 0 }
+
+        for (i in 0 until 20) {
+            monkeys.forEachIndexed { n, monkey ->
+                while (monkey.items.isNotEmpty()) {
+                    val (target, item) = monkey.parseItem(1)
+                    inspectionCounts[n]++
+                    monkeys[target].items.add(item)
+                }
+            }
         }
+
+        println(inspectionCounts.contentToString())
+
+        val monkeyBusiness = inspectionCounts.sortedDescending().take(2).reduce { n, m ->
+            n * m
+        }
+        println(monkeyBusiness)
     }
 }
 
@@ -131,6 +146,4 @@ class Monkey {
 
         return arrayOf(target, worry)
     }
-
-
 }
