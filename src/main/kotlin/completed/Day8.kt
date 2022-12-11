@@ -11,7 +11,6 @@ fun main() {
         println(part1())
         println(part2())
     }
-
 }
 
 class Day8(input: File) {
@@ -69,9 +68,9 @@ class Day8(input: File) {
                 val (north, east, south, west) = getTreesToEdge(i, j)
 
                 val scenicScore = getUnidirectionalScore(north, tree, true) *
-                        getUnidirectionalScore(west, tree, true) *
-                        getUnidirectionalScore(east, tree) *
-                        getUnidirectionalScore(south, tree)
+                    getUnidirectionalScore(west, tree, true) *
+                    getUnidirectionalScore(east, tree) *
+                    getUnidirectionalScore(south, tree)
 
                 if (scenicScore > max) {
                     max = scenicScore
