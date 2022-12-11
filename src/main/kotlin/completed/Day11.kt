@@ -34,7 +34,7 @@ class Day11(val input: File) {
         for (i in 0 until 20) {
             monkeys.forEachIndexed { n, monkey ->
                 while (monkey.items.isNotEmpty()) {
-                    val (target, item) = monkey.parseItem()
+                    val (target, item) = monkey.parseItem(3)
                     inspectionCounts[n]++
                     monkeys[target].items.add(item)
                 }
@@ -84,9 +84,9 @@ class Monkey {
         this.items = items
     }
 
-    fun parseItem(): Array<Int> {
+    fun parseItem(inspectAdjustment: Int): Array<Int> {
         val item = items.removeFirst()
-        val worry = inspect(item) / 3
+        val worry = inspect(item) / inspectAdjustment
         val target = test(worry)
 
         return arrayOf(target, worry)
