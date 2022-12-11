@@ -18,17 +18,17 @@ class Day11(val input: File) {
 
     private val monkeys = mutableListOf<Monkey>()
 
-    init {
-        resetState()
-    }
-
     private fun resetState() {
+        monkeys.clear()
+
         input.readText().split("\n\n").forEach { str ->
             monkeys.add(Monkey(str))
         }
     }
 
     fun part1() {
+        resetState()
+
         val inspectionCounts = Array(monkeys.size) { 0 }
 
         for (i in 0 until 20) {
@@ -48,34 +48,74 @@ class Day11(val input: File) {
     }
 
     fun part2() {
+        monkeys.clear()
 
+        input.readText().split("\n\n").forEach { str ->
+            monkeys.add(Monkey(str))
+        }
     }
 }
 
 class Monkey {
 
-    val inspect: (Int) -> Int
-    val test: (Int) -> Int
+    companion object {
+
+        fun getTest(string: String): (Int) -> Int {
+            val lines = string.split("\n")
+
+            val divisibleBy: Int = lines[3].filter { it.isDigit() }.toInt()
+            val trueMonkey: Int = lines[4].filter { it.isDigit() }.toInt()
+            val falseMonkey: Int = lines[5].filter { it.isDigit() }.toInt()
+
+            return { worry ->
+                if (worry % divisibleBy == 0) {
+                    trueMonkey
+                } else {
+                    falseMonkey
+                }
+            }
+        }
+
+        fun getInspect(string: String): (Int) -> Int {
+            val mutation = string.split("=")[1].trim().split(" ")
+            // should be old {operation} {param}
+            val operation: (Int, Int) -> Int = when (mutation[1]) {
+                "+" -> Int::plus
+                "-" -> Int::minus
+                "*" -> Int::times
+                "/" -> Int::div
+                else -> throw Exception("Unexpected operation ${mutation[1]}")
+            }
+            return { worry ->
+                try {
+                    val value = mutation[2].trim().toInt()
+                    operation(worry, value)
+                } catch (e: NumberFormatException) {
+                    operation(worry, worry)
+                }
+            }
+        }
+
+        fun getItems(string: String): MutableList<Int> {
+            val lines = string.split("\n")
+            val items = mutableListOf<Int>()
+
+            lines[1].split(":")[1].trim().split(", ").forEach { item ->
+                items.add(item.toInt())
+            }
+
+            return items
+        }
+    }
+
+    var inspect: (Int) -> Int
+    var test: (Int) -> Int
     var items = mutableListOf<Int>()
 
     constructor(string: String) {
-        val lines = string.split("\n")
-
-        lines[1].split(":")[1].trim().split(", ").forEach { item ->
-            items.add(item.toInt())
-        }
-        inspect = getOperation(lines[2].split(":")[1])
-        val divisibleBy: Int = lines[3].filter { it.isDigit() }.toInt()
-        val trueMonkey: Int = lines[4].filter { it.isDigit() }.toInt()
-        val falseMonkey: Int = lines[5].filter { it.isDigit() }.toInt()
-
-        test = { worry ->
-            if (worry % divisibleBy == 0) {
-                trueMonkey
-            } else {
-                falseMonkey
-            }
-        }
+        items = getItems(string)
+        inspect = getInspect(string)
+        test = getTest(string)
     }
 
     constructor(inspect: (Int) -> Int, test: (Int) -> Int, items: MutableList<Int>) {
@@ -84,7 +124,7 @@ class Monkey {
         this.items = items
     }
 
-    fun parseItem(inspectAdjustment: Int): Array<Int> {
+    fun parseItem(inspectAdjustment: Int = 1): Array<Int> {
         val item = items.removeFirst()
         val worry = inspect(item) / inspectAdjustment
         val target = test(worry)
@@ -92,23 +132,5 @@ class Monkey {
         return arrayOf(target, worry)
     }
 
-    private fun getOperation(string: String): (Int) -> Int {
-        val mutation = string.split("=")[1].trim().split(" ")
-        // should be old {operation} {param}
-        val operation: (Int, Int) -> Int = when (mutation[1]) {
-            "+" -> Int::plus
-            "-" -> Int::minus
-            "*" -> Int::times
-            "/" -> Int::div
-            else -> throw Exception("Unexpected operation ${mutation[1]}")
-        }
-        return { worry ->
-            try {
-                val value = mutation[2].toInt()
-                operation(worry, value)
-            } catch (e: NumberFormatException) {
-                operation(worry, worry)
-            }
-        }
-    }
+
 }
