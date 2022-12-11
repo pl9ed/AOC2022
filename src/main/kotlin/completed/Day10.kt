@@ -7,7 +7,6 @@ fun main() {
         println(part1())
         part2()
     }
-
     println("-------------------")
     Day10(Inputs.getDay(10)).apply {
         println(part1())
@@ -23,7 +22,6 @@ class Day10(input: File) {
     fun part1(): Int {
         cmds.forEachIndexed { i, str ->
             if (str.isNotBlank()) {
-                val line: String = str.trim()
                 val cmd = str.trim().split(" ")
                 when (cmd[0]) {
                     "addx" -> {
@@ -52,13 +50,10 @@ class Day10(input: File) {
     }
 
     fun part2() {
-        val numRows = registerValues.size / 40
-        var currentRow = 0
         println("Part 2 Output:")
         registerValues.forEachIndexed { i, value ->
             val spritePosition = i % 40
             if (i % 40 == 0) {
-                currentRow++
                 print("\n")
             }
             if (spritePosition in value - 1..value + 1) {
