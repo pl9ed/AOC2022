@@ -81,7 +81,7 @@ class Day12(val input: File) {
         while (graphSet.isNotEmpty()) {
             head.adjacent.forEach { node ->
                 node?.let {
-                    if (head.canMove(it)) {
+                    if (head.canMove(it) && graphSet.contains(it)) {
                         it.distance = head.distance + 1
                     }
                 }
@@ -94,7 +94,6 @@ class Day12(val input: File) {
             head = graphSet.filter { it.distance > 0 }.minBy { it.distance }
             graphSet.remove(head)
         }
-
         println(destinationNode.distance)
     }
 
@@ -111,7 +110,7 @@ class Day12(val input: File) {
             while (graphSet.isNotEmpty()) {
                 head.adjacent.forEach { node ->
                     node?.let {
-                        if (head.canMove(it)) {
+                        if (head.canMove(it) && graphSet.contains(it)) {
                             it.distance = head.distance + 1
                         }
                     }
