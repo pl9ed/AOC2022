@@ -2,9 +2,9 @@ import java.io.File
 
 object Inputs {
 
-    private val inputDir = File("src/main/resources/")
+    private val inputDir = File("src/main/resources")
     val inputs = mutableListOf<File>()
-    val example = File("$inputDir/example.txt")
+    val example = File("$inputDir/example13.txt")
 
     init {
         inputDir.listFiles().apply {
@@ -17,7 +17,10 @@ object Inputs {
         }
     }
 
+    fun getFile(filename: String) =
+        File("$inputDir/$filename")
+
     fun getDay(n: Int): File {
-        return File("src/main/resources/input$n.txt")
+        return File("$inputDir/input$n.txt")
     }
 }
