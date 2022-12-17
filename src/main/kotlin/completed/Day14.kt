@@ -106,7 +106,7 @@ class Day14(input: File) {
             drop2(fallingPoint[0], fallingPoint[1])
             sand++
         }
-
+        sand-- // adjust for final drop() call
         println(sand)
     }
 
