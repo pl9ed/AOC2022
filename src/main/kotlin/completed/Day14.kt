@@ -4,7 +4,11 @@ import java.io.File
 import java.lang.IndexOutOfBoundsException
 
 fun main() {
-    Day14(Inputs.getFile("example14.txt")).part1()
+    Day14(Inputs.getFile("example14.txt")).apply {
+        part1()
+        printGrid()
+    }
+    Day14(Inputs.getFile("input14.txt")).part1()
 }
 
 class Day14(input: File) {
@@ -43,8 +47,8 @@ class Day14(input: File) {
             walls.add(coordinates)
         }
 
-        width = yMax + 1
-        height = xMax - xMin + 1
+        width = xMax - xMin + 1
+        height = yMax + 1
 
         fallingPoint = listOf(500 - xMin, 0)
         grid = Array(height) { Array(width) { '.' } }
@@ -52,7 +56,6 @@ class Day14(input: File) {
         walls.forEach { wall ->
             wall.forEach { coordinate ->
                 coordinate[0] -= xMin
-                //coordinate[1] -= yMin
             }
         }
 
@@ -62,7 +65,6 @@ class Day14(input: File) {
         }
 
         populateGrid()
-
 
         println(fallingPoint.joinToString())
         grid[fallingPoint[1]][fallingPoint[0]] = '+'
@@ -83,7 +85,11 @@ class Day14(input: File) {
             println(e)
             println("Sand: $sand")
         }
-        println("Final state:")
+
+    }
+
+    fun printGrid() {
+        println("Grid state:")
         grid.forEach {
             println(it.contentToString())
         }
@@ -106,15 +112,23 @@ class Day14(input: File) {
                 val xRange = setOf(wall[i - 1][0], wall[i][0]).sorted()
                 val yRange = setOf(wall[i - 1][1], wall[i][1]).sorted()
 
-                if (xRange.size > 1) {
-                    for (x in xRange[0]..xRange[1]) {
-                        grid[yRange[0]][x] = '#'
+                try {
+                    if (xRange.size > 1) {
+                        for (x in xRange[0]..xRange[1]) {
+                            grid[yRange[0]][x] = '#'
+                        }
+                    } else {
+                        for (y in yRange[0]..yRange[1]) {
+                            grid[y][xRange[0]] = '#'
+                        }
                     }
-                } else {
-                    for (y in yRange[0]..yRange[1]) {
-                        grid[y][xRange[0]] = '#'
+                } catch (e: Exception) {
+                    grid.forEach {
+                        println(it.contentToString())
                     }
+                    throw e
                 }
+
             }
         }
         walls
