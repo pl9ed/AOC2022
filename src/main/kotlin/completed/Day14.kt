@@ -17,7 +17,10 @@ fun main() {
     //     printGrid2()
     // }
 
-    Day14(Inputs.getFile("input14.txt")).part1()
+    Day14(Inputs.getFile("input14.txt")).apply {
+        part1()
+        printGrid()
+    }
     Day14(Inputs.getFile("input14.txt")).apply {
         part2()
         printGrid2()
@@ -111,9 +114,11 @@ class Day14(input: File) {
     }
 
     fun printGrid() {
-        println("Grid state:")
+        val file = File("src/main/resources/14_grid.txt")
+        file.createNewFile()
+
         grid.forEach {
-            println(it.contentToString())
+            file.appendText(it.contentToString() + "\n")
         }
     }
 
@@ -127,10 +132,9 @@ class Day14(input: File) {
             arr[key.first][key.second + offset] = value
         }
 
-        val file = File("src/main/resources/grid2.txt")
+        val file = File("src/main/resources/14_grid2.txt")
         file.createNewFile()
         arr.forEach {
-            println(it.contentToString())
             file.appendText(it.contentToString() + "\n")
         }
     }
